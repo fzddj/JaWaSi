@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.makedream.util.StringUtil;
 import com.makedream.util.event.EventBus;
 
 

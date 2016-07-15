@@ -16,6 +16,8 @@ public class IndexItem implements Parcelable {
 
     private String Decimal;
 
+    public long intervalTime;
+
 
     public String getCode() {
         return Code;

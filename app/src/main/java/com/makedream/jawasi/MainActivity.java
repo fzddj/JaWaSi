@@ -18,7 +18,6 @@ import com.makedream.util.event.EventBus;
 import com.makedream.util.event.EventSubscriber;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -53,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements EventSubscriber {
                     JSONArray jsonArray = new JSONArray(response);
                     Gson gson = new Gson();
                     ArrayList<IndexItem> indexItems = gson.fromJson(response, listType);
+                    for (IndexItem indexItem : indexItems) {
+                        indexItem.intervalTime = 5*60*1000;
+                    }
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList(Constant.EventKey.LOAD_MAIN_DATA, indexItems);
                     Global.publishEventFromWorkThread(Constant.EventKey.LOAD_MAIN_DATA, bundle);
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements EventSubscriber {
             if(bundle != null) {
                 ArrayList<IndexItem> data =
                         bundle.getParcelableArrayList(Constant.EventKey.LOAD_MAIN_DATA);
-                adapter.getList().addAll(data);
+                adapter.setList(data);
                 adapter.notifyDataSetChanged();
             }
         }
@@ -79,5 +81,18 @@ public class MainActivity extends AppCompatActivity implements EventSubscriber {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getInstance().unSubScribe(Constant.EventKey.LOAD_MAIN_DATA);
+        adapter.onPause();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        adapter.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.onResume();
     }
 }
