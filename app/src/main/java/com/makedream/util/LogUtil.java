@@ -1,7 +1,8 @@
 package com.makedream.util;
 
-import android.support.constraint.BuildConfig;
 import android.util.Log;
+
+import com.makedream.jawasi.BuildConfig;
 
 /**
  * Created by dingdj on 2016/7/11.

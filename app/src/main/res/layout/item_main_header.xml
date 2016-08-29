@@ -1,17 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/header"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
+        android:layout_height="30dp">
 
         <TextView
-            android:id="@+id/tv_header"
-            android:layout_width="wrap_content"
-            android:layout_height="110dp"
+            android:id="@+id/tv_name"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:textSize="16sp"
-            android:text="i'm header"/>
+            android:textColor="#000000"
+            android:text="名称"/>
+
+        <TextView
+            android:id="@+id/tv_cur_price"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:text="当前价格"/>
+
+        <TextView
+            android:id="@+id/tv_plan_buy_price"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:text="买入价格"/>
+
+
+        <TextView
+            android:id="@+id/tv_plan_sell_price"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:text="计划价格"/>
+
+        <TextView
+            android:id="@+id/tv_next_plan_buy_price"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:text="补仓价格"/>
 
     </LinearLayout>
 </layout>
