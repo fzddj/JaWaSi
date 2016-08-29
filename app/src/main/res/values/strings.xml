@@ -3,4 +3,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings_backup_ing">正在备份</string>
+    <string name="settings_backup_sdcard_unavailable">sd卡不可用</string>
+    <string name="settings_backup_success">备份成功</string>
+    <string name="settings_backup_failed">备份失败</string>
+    <string name="settings_backup_restore_ing">还原数据</string>
+    <string name="settings_backup_not_found">未找到备份文件,请稍后再试</string>
+    <string name="settings_backup_restore_success">恢复备份成功</string>
+    <string name="settings_backup_restore_failed">恢复备份失败</string>
 </resources>

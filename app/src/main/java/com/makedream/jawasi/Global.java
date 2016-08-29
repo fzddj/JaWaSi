@@ -2,6 +2,7 @@ package com.makedream.jawasi;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 
 import com.makedream.util.event.EventBus;
@@ -16,6 +17,8 @@ public class Global {
 
     public static Context mContext;
 
+    /** 备份目录 */
+    public static String BACKUP_DIR = Environment.getExternalStorageDirectory() + "/JWS/Backup/";
 
     public static void runInMainThread(Runnable r) {
         if(r == null || handler == null) return;

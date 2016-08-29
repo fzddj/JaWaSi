@@ -6,12 +6,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.makedream.jawasi.R;
 import com.makedream.jawasi.ui.fragment.MainFragment;
 import com.makedream.jawasi.ui.fragment.StockFragment;
+import com.makedream.jawasi.util.BackupUtil;
+
+import org.greenrobot.greendao.DbUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.tl);
         mViewPager = (ViewPager) findViewById(R.id.vp);
         initUI();
@@ -100,4 +108,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.back_up:
+                BackupUtil backupUtil = new BackupUtil(this);
+                backupUtil.backUp();
+                return true;
+            case R.id.restore:
+                backupUtil = new BackupUtil(this);
+                backupUtil.restore();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
