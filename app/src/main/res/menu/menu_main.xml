@@ -2,4 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/back_up" android:title="备份" />
     <item android:id="@+id/restore" android:title="还原" />
+    <item android:id="@+id/add_exercise" android:title="增加训练项目" />
 </menu>

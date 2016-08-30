@@ -17,11 +17,13 @@ import java.util.Map;
  */
 public class DaoSession extends AbstractDaoSession {
 
-    private final DaoConfig execiseItemDaoConfig;
+    private final DaoConfig exerciseItemDaoConfig;
+    private final DaoConfig exerciseItemDetailDaoConfig;
     private final DaoConfig stockDaoConfig;
     private final DaoConfig stockNoteDaoConfig;
 
-    private final ExeciseItemDao execiseItemDao;
+    private final ExerciseItemDao exerciseItemDao;
+    private final ExerciseItemDetailDao exerciseItemDetailDao;
     private final StockDao stockDao;
     private final StockNoteDao stockNoteDao;
 
@@ -29,8 +31,11 @@ public class DaoSession extends AbstractDaoSession {
             daoConfigMap) {
         super(db);
 
-        execiseItemDaoConfig = daoConfigMap.get(ExeciseItemDao.class).clone();
-        execiseItemDaoConfig.initIdentityScope(type);
+        exerciseItemDaoConfig = daoConfigMap.get(ExerciseItemDao.class).clone();
+        exerciseItemDaoConfig.initIdentityScope(type);
+
+        exerciseItemDetailDaoConfig = daoConfigMap.get(ExerciseItemDetailDao.class).clone();
+        exerciseItemDetailDaoConfig.initIdentityScope(type);
 
         stockDaoConfig = daoConfigMap.get(StockDao.class).clone();
         stockDaoConfig.initIdentityScope(type);
@@ -38,23 +43,30 @@ public class DaoSession extends AbstractDaoSession {
         stockNoteDaoConfig = daoConfigMap.get(StockNoteDao.class).clone();
         stockNoteDaoConfig.initIdentityScope(type);
 
-        execiseItemDao = new ExeciseItemDao(execiseItemDaoConfig, this);
+        exerciseItemDao = new ExerciseItemDao(exerciseItemDaoConfig, this);
+        exerciseItemDetailDao = new ExerciseItemDetailDao(exerciseItemDetailDaoConfig, this);
         stockDao = new StockDao(stockDaoConfig, this);
         stockNoteDao = new StockNoteDao(stockNoteDaoConfig, this);
 
-        registerDao(ExeciseItem.class, execiseItemDao);
+        registerDao(ExerciseItem.class, exerciseItemDao);
+        registerDao(ExerciseItemDetail.class, exerciseItemDetailDao);
         registerDao(Stock.class, stockDao);
         registerDao(StockNote.class, stockNoteDao);
     }
     
     public void clear() {
-        execiseItemDaoConfig.getIdentityScope().clear();
+        exerciseItemDaoConfig.getIdentityScope().clear();
+        exerciseItemDetailDaoConfig.getIdentityScope().clear();
         stockDaoConfig.getIdentityScope().clear();
         stockNoteDaoConfig.getIdentityScope().clear();
     }
 
-    public ExeciseItemDao getExeciseItemDao() {
-        return execiseItemDao;
+    public ExerciseItemDao getExerciseItemDao() {
+        return exerciseItemDao;
+    }
+
+    public ExerciseItemDetailDao getExerciseItemDetailDao() {
+        return exerciseItemDetailDao;
     }
 
     public StockDao getStockDao() {

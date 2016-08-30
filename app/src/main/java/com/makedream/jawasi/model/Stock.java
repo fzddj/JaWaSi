@@ -58,8 +58,6 @@ public class Stock implements Parcelable {
     private double shiJingLv;
 
 
-
-
     @Generated(hash = 1701416346)
     public Stock(Long id, String stockId, String stockName, long stockAllNum,
             double currentPrice, double planSalePrice, double planBuyPrice,
@@ -79,8 +77,6 @@ public class Stock implements Parcelable {
     @Generated(hash = 1902438397)
     public Stock() {
     }
-
-
 
 
     public Long getId() {

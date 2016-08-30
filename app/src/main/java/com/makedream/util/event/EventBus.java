@@ -17,14 +17,12 @@ import java.util.List;
  */
 public class EventBus {
 
-
-
     public static final String MAIN_LOAD_DATA = "main_load_data";
     public static final String STOCK_LOAD_DATA = "stock_load_data";
     public static final String STOCK_NOTE_LOAD_DATA = "stock_note_load_data";
     public static final String STOCK_RELOAD = "stock_reload";
     public static final String MISSION_COMPLETE = "mission_complete";
-
+    public static final String EXERCISE_RELOAD = "exercise_reload";
 
     private static EventBus instance;
 

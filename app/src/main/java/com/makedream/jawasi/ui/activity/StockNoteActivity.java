@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.common.eventbus.Subscribe;
 import com.makedream.JaWaSiApplication;
 import com.makedream.jawasi.R;
 import com.makedream.jawasi.model.StockNote;
@@ -18,8 +17,6 @@ import com.makedream.util.StringUtil;
 import com.makedream.util.ThreadUtil;
 import com.makedream.util.event.EventBus;
 import com.makedream.util.event.EventSubscriber;
-
-import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.Date;
 import java.util.List;

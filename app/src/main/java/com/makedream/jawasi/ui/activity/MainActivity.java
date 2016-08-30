@@ -15,9 +15,8 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.makedream.jawasi.R;
 import com.makedream.jawasi.ui.fragment.MainFragment;
 import com.makedream.jawasi.ui.fragment.StockFragment;
+import com.makedream.jawasi.ui.window.AddExerciseDialog;
 import com.makedream.jawasi.util.BackupUtil;
-
-import org.greenrobot.greendao.DbUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(0);
     }
 
 
@@ -126,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.restore:
                 backupUtil = new BackupUtil(this);
                 backupUtil.restore();
+                return true;
+            case R.id.add_exercise:
+                AddExerciseDialog dialog = new AddExerciseDialog(this);
+                dialog.show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

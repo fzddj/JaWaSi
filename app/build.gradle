@@ -12,7 +12,37 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+
+    signingConfigs {
+        debug {
+            storeFile file("flkeystore")
+            storePassword "flkeystore"
+            keyAlias "flkeystore"
+            keyPassword "flkeystore"
+        }
+
+        //你自己的keystore信息
+        release {
+            storeFile file("flkeystore")
+            storePassword "flkeystore"
+            keyAlias "flkeystore"
+            keyPassword "flkeystore"
+        }
+    }
     buildTypes {
+
+        debug {
+            // 显示Log
+            //buildConfigField "boolean", "LOG_DEBUG", "true"
+            //versionNameSuffix "-debug"
+            /* minifyEnabled true
+             zipAlignEnabled true
+             shrinkResources true
+             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'*/
+            signingConfig signingConfigs.debug
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

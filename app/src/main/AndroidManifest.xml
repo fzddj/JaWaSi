@@ -40,9 +40,6 @@
         <activity
             android:name=".ui.activity.StockNoteActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".ui.activity.Main2Activity">
-
-        </activity>
     </application>
 
 </manifest>

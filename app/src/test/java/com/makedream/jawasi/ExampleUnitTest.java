@@ -1,6 +1,8 @@
 package com.makedream.jawasi;
 
+import org.greenrobot.greendao.annotation.Entity;
 import org.junit.Test;
+
 
 import static org.junit.Assert.*;
 

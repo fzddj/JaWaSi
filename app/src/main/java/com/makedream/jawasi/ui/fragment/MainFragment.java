@@ -1,29 +1,28 @@
 package com.makedream.jawasi.ui.fragment;
 
 
-import android.database.Cursor;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.ddj.commonkit.DateUtil;
 import com.makedream.JaWaSiApplication;
 import com.makedream.jawasi.Global;
 import com.makedream.jawasi.R;
-import com.makedream.jawasi.databinding.FragmentMainBinding;
-import com.makedream.jawasi.model.ExeciseItem;
-import com.makedream.jawasi.model.ExeciseItemDao;
+import com.makedream.jawasi.adapter.ExerciseAdapter;
+import com.makedream.jawasi.model.ExerciseItem;
+import com.makedream.jawasi.model.ExerciseItemDao;
+import com.makedream.jawasi.model.ExerciseItemDetailDao;
 import com.makedream.util.ThreadUtil;
 import com.makedream.util.event.EventBus;
 import com.makedream.util.event.EventSubscriber;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +33,11 @@ import java.util.List;
 public class MainFragment extends Fragment implements EventSubscriber {
 
 
-    private ExeciseItemDao mExeciseItemDao;
+    private ExerciseItemDao mExeciseItemDao;
+
+    ExerciseItemDetailDao mExerciseItemDetailDao;
+
+    private ExerciseAdapter exerciseAdapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,7 +48,6 @@ public class MainFragment extends Fragment implements EventSubscriber {
     private String mParam1;
     private String mParam2;
 
-    private FragmentMainBinding binding;
 
 
     public MainFragment() {
@@ -78,8 +80,14 @@ public class MainFragment extends Fragment implements EventSubscriber {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        JaWaSiApplication application = ((JaWaSiApplication)getActivity().getApplication());
+        mExeciseItemDao = application.getDaoSession().getExerciseItemDao();
+        mExerciseItemDetailDao = application.getDaoSession().getExerciseItemDetailDao();
+        exerciseAdapter = new ExerciseAdapter(getContext(), getLayoutInflater(savedInstanceState), mExerciseItemDetailDao
+        , mExeciseItemDao);
         EventBus.getInstance().subScribe(EventBus.MAIN_LOAD_DATA, this);
         EventBus.getInstance().subScribe(EventBus.MISSION_COMPLETE, this);
+        EventBus.getInstance().subScribe(EventBus.EXERCISE_RELOAD, this);
 
     }
 
@@ -87,27 +95,10 @@ public class MainFragment extends Fragment implements EventSubscriber {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
-        binding = DataBindingUtil.bind(view);
-        JaWaSiApplication application = ((JaWaSiApplication)getActivity().getApplication());
-        mExeciseItemDao = application.getDaoSession().getExeciseItemDao();
-        binding.btnPlay.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                //判断今天是否已完成
-                if(isTodayTaskComplete()) {
-                    Toast.makeText(getContext(), "mission complete", Toast.LENGTH_SHORT).show();
-                }else{
-                    ExeciseItem execiseItem = new ExeciseItem();
-                    execiseItem.setNum(60);
-                    execiseItem.setCreateDate(new Date());
-                    execiseItem.setType(1);
-                    execiseItem.setDateKey(DateUtil.getStringDateShort());
-                    mExeciseItemDao.insert(execiseItem);
-                    loadData();
-                }
-            }
-        });
+        View view = inflater.inflate(R.layout.fragment_exercise, container, false);
+        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.rcv);
+        recyclerView.setAdapter(exerciseAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadData();
         return view;
     }
@@ -116,71 +107,17 @@ public class MainFragment extends Fragment implements EventSubscriber {
         ThreadUtil.executeMore(new Runnable() {
             @Override
             public void run() {
-                long day = mExeciseItemDao.count();
-                String sumQuery = String.format("select sum(%s) from %s",
-                        new Object[]{ExeciseItemDao.Properties.Num.columnName, ExeciseItemDao.TABLENAME});
-                Cursor cursor = mExeciseItemDao.getDatabase().rawQuery(sumQuery, null);
-                if(cursor != null) {
-                    cursor.moveToNext();
-                    int nums = cursor.getInt(0);
-                    ExerciseVo vo = new ExerciseVo();
-                    vo.day = day;
-                    vo.nums = nums;
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("vo", vo);
-                    Global.publishEventFromWorkThread(EventBus.MAIN_LOAD_DATA, bundle);
+                ArrayList<ExerciseItem> items = new ArrayList<ExerciseItem>(mExeciseItemDao.loadAll());
+                if(items.size() == 0) return;
+                for (ExerciseItem item : items) {
+                    item.setComplete(isTodayTaskComplete(item.getId()));
+                    Log.e("ddj", "run: "+item.isComplete());
                 }
-                if(isTodayTaskComplete()) {
-                    Global.publishEventFromWorkThread(EventBus.MISSION_COMPLETE, null);
-                }
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("items", items);
+                Global.publishEventFromWorkThread(EventBus.MAIN_LOAD_DATA, bundle);
             }
         });
-    }
-
-    private boolean isTodayTaskComplete() {
-        List list = mExeciseItemDao.queryRaw("where "+ExeciseItemDao.Properties.DateKey.columnName+" = ? ",
-                new String[]{DateUtil.getStringDateShort()});
-        return list != null && list.size() > 0;
-    }
-
-
-    public static class ExerciseVo implements Parcelable {
-
-        public long day;
-
-        public int nums;
-
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeLong(this.day);
-            dest.writeInt(this.nums);
-        }
-
-        public ExerciseVo() {
-        }
-
-        protected ExerciseVo(Parcel in) {
-            this.day = in.readLong();
-            this.nums = in.readInt();
-        }
-
-        public static final Creator<ExerciseVo> CREATOR = new Creator<ExerciseVo>() {
-            @Override
-            public ExerciseVo createFromParcel(Parcel source) {
-                return new ExerciseVo(source);
-            }
-
-            @Override
-            public ExerciseVo[] newArray(int size) {
-                return new ExerciseVo[size];
-            }
-        };
     }
 
     @Override
@@ -194,12 +131,21 @@ public class MainFragment extends Fragment implements EventSubscriber {
     public void dealEvent(String eventKey, Bundle bundle) {
         if(EventBus.MAIN_LOAD_DATA.equals(eventKey)) {
             if(bundle == null) return;
-            ExerciseVo vo = bundle.getParcelable("vo");
-            binding.setVo(vo);
-            binding.tvDay.setText(vo.day+"");
-            binding.tvNum.setText(vo.nums + "");
+            ArrayList<ExerciseItem> items = bundle.getParcelableArrayList("items");
+            exerciseAdapter.getDatas().clear();
+            exerciseAdapter.getDatas().addAll(items);
+            exerciseAdapter.notifyDataSetChanged();
         }else if(EventBus.MISSION_COMPLETE.equals(eventKey)) {
-            binding.tvDayExeciseNum.setText("0");
+
+        }else if(EventBus.EXERCISE_RELOAD.equals(eventKey)) {
+            loadData();
         }
+    }
+
+    private boolean isTodayTaskComplete(Long itemId) {
+        List list = mExerciseItemDetailDao.queryRaw("where " + ExerciseItemDetailDao.Properties.DateKey.columnName + " = ? and " +
+                        ExerciseItemDetailDao.Properties.ItemId.columnName + " = ? ",
+                new String[]{DateUtil.getStringDateShort(), itemId+""});
+        return list != null && list.size() > 0;
     }
 }

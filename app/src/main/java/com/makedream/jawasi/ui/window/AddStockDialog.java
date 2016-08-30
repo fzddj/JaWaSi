@@ -5,15 +5,11 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.PopupWindow;
 
-import com.ddj.commonkit.android.system.SystemEnvUtil;
 import com.makedream.JaWaSiApplication;
 import com.makedream.jawasi.Global;
 import com.makedream.jawasi.R;
 import com.makedream.jawasi.databinding.DialogAddStockBinding;
-import com.makedream.jawasi.model.ExeciseItem;
 import com.makedream.jawasi.model.Stock;
 import com.makedream.jawasi.model.StockDao;
 import com.makedream.util.event.EventBus;
