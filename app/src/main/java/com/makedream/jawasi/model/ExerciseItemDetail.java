@@ -22,7 +22,6 @@ public class ExerciseItemDetail {
     @ToOne(joinProperty = "itemId")
     private ExerciseItem item;
 
-    @Unique
     private String dateKey;
 
     /**

@@ -50,7 +50,7 @@ public class ExerciseItemDetailDao extends AbstractDao<ExerciseItemDetail, Long>
         db.execSQL("CREATE TABLE " + constraint + "\"EXERCISE_ITEM_DETAIL\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"ITEM_ID\" INTEGER," + // 1: itemId
-                "\"DATE_KEY\" TEXT UNIQUE );"); // 2: dateKey
+                "\"DATE_KEY\" TEXT );"); // 2: dateKey
     }
 
     /** Drops the underlying database table. */
